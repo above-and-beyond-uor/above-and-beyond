@@ -1,0 +1,84 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.min.js"></script>
+<style>
+#instruct_text{
+  margin:auto;
+  width:500px;
+  padding:50px;
+  max-height:600px;
+  text-align: center;  
+}
+#proceed_button{
+  position:absolute;
+  right: 20px;
+}
+#trial_contents{
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin:auto;
+  width:600;
+  height:600;
+}
+</style>
+<div id="trial_contents">
+  <div id="instruct_text">
+    Please wait until certificate is succesfully sent off to <span id="department_email_span"></span>.
+  </div>
+</div>
+
+<script>
+function return_doc(department,
+                    nominator,
+                    reason,
+                    recipient){
+  
+	
+	
+	return doc.output();
+
+}
+
+
+/*
+
+$("input[name=survey_recep_name]").on("change",function(){
+  Trial.set("recipient",$("input[name=survey_recep_name]").val());
+});
+$("input[name=survey_sender_name]").on("change",function(){
+  Trial.set("nominator",$("input[name=survey_sender_name]").val());
+});
+$("textarea[name=survey_why]").on("change",function(){
+  Trial.set("reason",$("textarea[name=survey_why]").val());
+});
+
+$("select[name=survey_department]").on("change",function(){
+  Trial.set("department",$("select[name=survey_department]").val());
+
+*/
+
+Trial.set_timer(function(){
+
+	$.ajax({
+    method: "POST",
+    url: "https://open-collector.org/AAndBUoR.php",
+    data: {
+      department : Trial.get("department"),
+      nominator  : Trial.get("nominator"),
+      reason     : Trial.get("reason"),
+      recipient  : Trial.get("recipient"),
+      cert_obj   : {
+        department : Trial.get("department"),
+        nominator  : Trial.get("nominator"),
+        reason     : Trial.get("reason"),
+        recipient  : Trial.get("recipient")
+      }
+    },
+  }).done(function(data){
+     console.log(data);
+  });
+	
+  
+},0)
+</script>
