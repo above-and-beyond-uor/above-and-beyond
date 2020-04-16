@@ -1,0 +1,166 @@
+<button class='btn btn-primary' id='preview_certificat_btn' style="display:none">Preview</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.min.js"></script>
+<script>
+var recipient;
+var nominator;
+var reason;
+var department;
+
+if(typeof(decrypted_data) !== "undefined"){
+  recipient    = decrypted_data.responses[2].survey_recep_name;
+	nominator    = decrypted_data.responses[2].survey_sender_name;
+	reason       = decrypted_data.responses[2].survey_why;
+	department   = decrypted_data.responses[2].survey_department;
+	certificate_name = "certificate.pdf";
+	
+  generate_certificate();
+}
+$("#preview_certificat_btn").show();
+
+
+$("input[name=survey_recep_name]").on("change",function(){
+  Trial.set("recipient",$("input[name=survey_recep_name]").val());
+});
+$("input[name=survey_sender_name]").on("change",function(){
+  Trial.set("nominator",$("input[name=survey_sender_name]").val());
+});
+$("textarea[name=survey_why]").on("change",function(){
+  Trial.set("reason",$("textarea[name=survey_why]").val());
+});
+
+$("select[name=survey_department]").on("change",function(){
+  Trial.set("department",$("select[name=survey_department]").val());
+  
+  /*
+  var departments = survey_obj.data.filter(function(row){
+    return row.item_name == "department";
+  })[0];
+  
+  var department_index = departments.answers.split("|").indexOf($("select[name=survey_department]").val());
+  var department_email = departments.values.split("|")[department_index];
+  
+  Trial.set("department_email",department_email);
+  */
+});
+
+$("#preview_certificat_btn").on("click",function(){
+  if($("input[name=survey_recep_name]").val() !== undefined){
+    recipient  = $("input[name=survey_recep_name]").val();
+    nominator  = $("input[name=survey_sender_name]").val();
+    reason     = $("textarea[name=survey_why]").val();
+    department = $("select[name=survey_department]").val();
+    if(department == null){
+      bootbox.alert("This won't work until you select a department");
+    }
+	} else {
+	  recipient  = "Example Recipient";
+    nominator  = "Example Nominator";
+    reason     = "Example Reason";
+    department = "Example Department";
+	}
+  certificate_name = "Preview_Only_Not_Sent_Yet.pdf";
+
+  generate_certificate();
+});
+
+
+function generate_certificate(){
+  
+  var uor_logo_url = "../User/logos/UoR_logo.jpg";
+	var A_A_logo_url = "../User/logos/Above_and_Beyond.png";
+	var lfe_logo_url = "../User/logos/LFE.png";
+	var sticker_url  = "../User/logos/Sticker.jpg";
+	var stars_url    = "../User/logos/SingleStar.jpg";
+
+  var uor_logo = new Image();
+	var a_a_logo = new Image();
+	var lfe_logo = new Image();
+	var sticker  = new Image();
+	var stars    = new Image();
+	uor_logo.src = uor_logo_url;
+	a_a_logo.src = A_A_logo_url;
+	lfe_logo.src = lfe_logo_url;
+	sticker.src  = sticker_url;
+	stars.src    = stars_url;
+	
+	images 			 = [uor_logo,a_a_logo,lfe_logo,sticker,stars];			
+	images_loaded = 0;
+	images.forEach(function(image){
+		image.onload = function () {
+			images_loaded ++;
+			if(images_loaded == 5){
+				write_doc();
+			}
+		}
+	});
+	
+	
+	
+	function write_doc(){	
+		var options = {orientation: 'p', unit: 'mm'}; //format: custom
+		var doc = new jsPDF(options);
+		
+		doc.setLineWidth(20);
+		doc.setDrawColor(0, 153, 255);
+		
+		doc.rect(1,1, 208, 295); //, style
+		
+    doc.addImage(uor_logo, 'PNG', 18, 18, 40, 13);
+		doc.addImage(a_a_logo, 'PNG', 165, 15, 30, 30);
+		
+    
+		doc.addImage(stars, 'PNG', 95, 40,  10, 10);
+		doc.addImage(stars, 'PNG', 95, 65,  10, 10);
+    
+    doc.addImage(stars, 'PNG', 95, 205, 10, 10);
+		doc.addImage(stars, 'PNG', 95, 250, 10, 10);
+		
+		//doc.addImage(sticker, 'JPG', 0, 0, 25, 25);
+		
+		
+		
+		doc.setFont("Helvetica");
+    doc.setFontStyle("bold");
+		doc.setFontSize(20);
+		doc.text(department, 103, 60, 'center'); // 'School of Psychology & Clinical Language Sciences'
+    doc.setFontStyle("");
+		doc.text('Congratulations & thank you:', 100, 90, 'center');
+		doc.setTextColor(0, 0, 255);
+		doc.text(recipient, 100, 105, 'center');
+		doc.setTextColor(0, 0, 0);
+		var nomination_text = doc.splitTextToSize("You have been nominated for 'Above and Beyond' by " + nominator + " for the following reason:", 160);
+		doc.text(nomination_text, 100, 120,"center");
+		doc.setTextColor(0, 0, 255);
+    doc.setFontSize(15);
+		var reason_text = doc.splitTextToSize(reason, 160);
+		doc.text(reason_text, 100, 150, 'center');
+		doc.setTextColor(0, 0, 0);
+		doc.setFontSize(12);
+		
+		var near_bottom_text = doc.splitTextToSize("'Above and Beyond' is a way of showing appreciation of your colleagues. This platform has been adopted from the 'Learning from Excellence' programme used in the NHS. If you would also like to nominate a colleague for going that extra mile, or just to say thank you, please go to:", 150);
+		doc.text(100, 225, near_bottom_text,"center");
+		doc.setTextColor(0, 0, 255);
+		doc.text("https://tinyurl.com/y8bdscor", 100, 247, 'center');
+		
+		doc.addImage(lfe_logo, 'PNG', 70, 265, 60, 20);
+		
+		doc.setTextColor(0, 0, 153);
+		doc.setFontSize(10);
+		doc.text("www.learningfromexcellence.com", 100, 293, 'center');
+		
+		var this_output = doc.output();
+		
+		doc.save(certificate_name);
+		
+		if(certificate_name == "Preview_Only_Not_Sent_Yet.pdf"){
+		  bootbox.alert("You now have downloaded a preview. If you're happy with the preview, please do <b>NOT</b> forget to submit the actual form by clicking <b>Proceed</b>!");
+		} else {
+  		bootbox.confirm("You can also download another certificate using the name of the nominator then recipient if they have no illegal characters in their names - do you want to try?",function(result){
+  			if(result){
+  				doc.save(nominator+"_nominating_"+recipient+".pdf");
+  			}
+  		});  
+		}
+	}
+}
+</script>
