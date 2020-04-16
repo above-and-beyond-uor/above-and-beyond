@@ -24,7 +24,7 @@
 </style>
 <div id="trial_contents">
   <div id="instruct_text">
-    Please wait until certificate is succesfully sent off to <span id="department_email_span"></span>.
+    Please wait until certificate is succesfully sent off.
   </div>
 </div>
 
@@ -59,26 +59,34 @@ $("select[name=survey_department]").on("change",function(){
 */
 
 Trial.set_timer(function(){
-
-	$.ajax({
-    method: "POST",
-    url: "https://open-collector.org/AAndBUoR.php",
-    data: {
-      department : Trial.get("department"),
-      nominator  : Trial.get("nominator"),
-      reason     : Trial.get("reason"),
-      recipient  : Trial.get("recipient"),
-      cert_obj   : {
+  function send_email(){
+  	$.ajax({
+      method: "POST",
+      url: "https://open-collector.org/AAndBUoR.php",
+      data: {
         department : Trial.get("department"),
         nominator  : Trial.get("nominator"),
         reason     : Trial.get("reason"),
-        recipient  : Trial.get("recipient")
-      }
-    },
-  }).done(function(data){
-     console.log(data);
-     Trial.submit();
-  });
+        recipient  : Trial.get("recipient"),
+        cert_obj   : {
+          department : Trial.get("department"),
+          nominator  : Trial.get("nominator"),
+          reason     : Trial.get("reason"),
+          recipient  : Trial.get("recipient")
+        }
+      },
+    }).done(function(data){
+       if(data == "success - the file has been sent"){
+         Trial.submit();
+       }
+       bootbox.confirm("There was a problem sending the e-mail. Click OK to try again, or contact anthony at a.haffey@reading.ac.uk to let him know there was a problem.",function(result){
+         if(result){
+           send_email();
+         }
+       });
+    });
+  }
+  send_email();
 	
   
 },0)
