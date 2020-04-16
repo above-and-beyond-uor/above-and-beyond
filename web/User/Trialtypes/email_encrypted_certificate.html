@@ -37,32 +37,17 @@ function return_doc(department,
 	
 	
 	return doc.output();
-
 }
 
-
-/*
-
-$("input[name=survey_recep_name]").on("change",function(){
-  Trial.set("recipient",$("input[name=survey_recep_name]").val());
-});
-$("input[name=survey_sender_name]").on("change",function(){
-  Trial.set("nominator",$("input[name=survey_sender_name]").val());
-});
-$("textarea[name=survey_why]").on("change",function(){
-  Trial.set("reason",$("textarea[name=survey_why]").val());
-});
-
-$("select[name=survey_department]").on("change",function(){
-  Trial.set("department",$("select[name=survey_department]").val());
-
-*/
-
 Trial.set_timer(function(){
-  function send_email(){
+  var post_list = ["https://nt906822.webs.act.reading.ac.uk/AAndBUoR.php",
+                   "https://open-collector.org/AAndBUoR.php"]; 
+  function send_email(post_list){
+    var shifted_list = JSON.parse(JSON.stringify(post_list));
+    var this_url = shifted_list.shift();
   	$.ajax({
       method: "POST",
-      url: "https://open-collector.org/AAndBUoR.php",
+      url: this_url,
       data: {
         department : Trial.get("department"),
         nominator  : Trial.get("nominator"),
@@ -75,18 +60,37 @@ Trial.set_timer(function(){
           recipient  : Trial.get("recipient")
         }
       },
-    }).done(function(data){
-       if(data == "success - the file has been sent"){
-         Trial.submit();
-       }
-       bootbox.confirm("There was a problem sending the e-mail. Click OK to try again, or contact anthony at a.haffey@reading.ac.uk to let him know there was a problem.",function(result){
-         if(result){
-           send_email();
-         }
-       });
+    })
+    .done(function(data){
+      console.dir(data);
+      if(data == "success - the file has been sent"){
+        Trial.submit();
+      } else {
+        if(shifted_list.length > 0){
+          send_email(shifted_list);
+        } else {
+          bootbox.confirm("There was a problem sending the e-mail. Click OK to try again, or contact anthony at a.haffey@reading.ac.uk to let him know there was a problem.",function(result){
+            if(result){
+              send_email(post_list);
+            }
+          });          
+        }
+      }
+    })
+    .catch(function(error){
+      console.dir(error);
+      if(shifted_list.length > 0){
+        send_email(shifted_list);
+      } else {
+        bootbox.confirm("There was a problem sending the e-mail. Click OK to try again, or contact anthony at a.haffey@reading.ac.uk to let him know there was a problem.",function(result){
+          if(result){
+            send_email(post_list);
+          }
+        });          
+      }
     });
   }
-  send_email();
+  send_email(post_list);
 	
   
 },0)

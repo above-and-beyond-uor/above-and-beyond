@@ -1,5 +1,5 @@
 Item,trial type,Max Time,Text,Shuffle 1,link,survey,
-0,instruct,user,"<span style=""font-size:20px"">Welcome to <b>'Above & Beyond'</b>, a platform in which you can nominate a colleague who has gone that extra mile to make the School of PCLS a better, happier place to work. This framework has been adopted from the 'Learning from Excellence' programme used in the NHS. Whether it is a small undertaking or a large-scale project, this is a simple way of acknowledging colleagues' efforts. It is a quick and easy form to complete and your nominee will receive a great big thank you and a warm fuzzy feeling inside. 
+0,instruct,user,"<span style=""font-size:20px"">Welcome to <b>'Above & Beyond'</b>, a platform in which you can nominate a colleague who has gone that extra mile to make your School/Department a better, happier place to work. This framework has been adopted from the 'Learning from Excellence' programme used in the NHS. Whether it is a small undertaking or a large-scale project, this is a simple way of acknowledging colleagues' efforts. It is a quick and easy form to complete and your nominee will receive a great big thank you and a warm fuzzy feeling inside. 
 <br><br>
 Thank you for taking part in Above & Beyond!</span>",off,,,
 0,survey,user,,off,,danquestionnaire.csv,
