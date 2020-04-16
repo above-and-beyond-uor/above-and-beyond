@@ -549,6 +549,7 @@ function final_trial(){
       function online_save_check(){
         setTimeout(function(){
           if(online_data_obj.saves_started == online_data_obj.saves_ended){
+            online_data_obj.finished_and_stored = true;
             $("#google_progress").css("width","100%");
             setTimeout(function(){
               if(exp_json.this_condition.download_at_end !== "off"){
@@ -578,6 +579,7 @@ function final_trial(){
       break;
     case "localhost":
     case "preview":
+      online_data_obj.finished_and_stored = true;
       if(exp_json.this_condition.download_at_end !== "off"){
         download_message = "You can download the data by clicking <b><span id='download_json'>here</span></b>.";
       } else {
