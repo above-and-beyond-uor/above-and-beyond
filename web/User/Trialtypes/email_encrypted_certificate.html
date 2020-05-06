@@ -40,8 +40,12 @@ function return_doc(department,
 }
 
 Trial.set_timer(function(){
-  var post_list = ["https://nt906822.webs.act.reading.ac.uk/AAndBUoR.php",
-                   "https://open-collector.org/AAndBUoR.php"]; 
+  var post_list = ["https://above-and-beyond.reading.ac.uk/AAndB.php",
+                   /*
+                   "https://nt906822.webs.act.reading.ac.uk/AAndBUoR.php",
+                   "https://open-collector.org/AAndBUoR.php"
+                   */
+                   ]; 
   function send_email(post_list){
     var shifted_list = JSON.parse(JSON.stringify(post_list));
     var this_url = shifted_list.shift();
